@@ -1,0 +1,14 @@
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile "io.reactivex:rxnetty:${rxnetty_version}"
+    compile "io.reactivex:rxjava:${rxjava_version}"
+    compile "io.netty:netty-all:${netty_version}"
+}
