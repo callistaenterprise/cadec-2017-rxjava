@@ -1,4 +1,4 @@
-package se.callista.rxjava;
+package se.callista.rxjava.chunked;
 
 import java.util.Iterator;
 import java.util.Random;
