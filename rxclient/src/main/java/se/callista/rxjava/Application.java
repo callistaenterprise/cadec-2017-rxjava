@@ -1,28 +1,19 @@
 package se.callista.rxjava;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import se.callista.rxjava.services.LogService;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
-@SpringBootApplication
-public class Application implements CommandLineRunner {
+public class Application {
 
-	@Autowired
-	private LogService logService;
+	private LogService logService = new LogService();
 
-	@Override
-    public void run(String... args) throws Exception {
+    public static void main(String... args) throws Exception {
 		System.out.println("args = " + args);
-		logService.getLogStream().sample(1, SECONDS).toBlocking().subscribe(System.out::print);
+
+	    Application application = new Application();
+		application.logService.getLogStream(100).sample(1, SECONDS).toBlocking().subscribe(System.out::print);
     }
 
-
-    public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
-    }
 
 }

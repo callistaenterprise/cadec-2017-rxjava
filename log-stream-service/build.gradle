@@ -1,4 +1,7 @@
 apply plugin: 'java'
+apply plugin: 'application'
+
+mainClassName = "se.callista.rxjava.LogStreamServer"
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -10,6 +13,9 @@ repositories {
 jar {
     baseName = projectName
     version =  projectVersion
+	manifest {
+		attributes 'Main-Class': mainClassName
+	}
 }
 
 dependencies {
@@ -20,7 +26,3 @@ dependencies {
     compile "ch.qos.logback:logback-classic:${logback_version}"
     compile "ch.qos.logback:logback-core:${logback_version}"
 }
-
-apply plugin: 'application'
-
-mainClassName = "se.callista.rxjava.LogServer"
