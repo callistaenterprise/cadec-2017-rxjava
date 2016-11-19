@@ -1,12 +1,10 @@
-package se.callista.cadec2017;
+package se.callista.rxjava;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import se.callista.cadec2017.services.LogService;
-
-import java.util.concurrent.TimeUnit;
+import se.callista.rxjava.services.LogService;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
@@ -18,7 +16,8 @@ public class Application implements CommandLineRunner {
 
 	@Override
     public void run(String... args) throws Exception {
-        logService.getLogStream().sample(1, SECONDS).toBlocking().subscribe(System.out::print);
+		System.out.println("args = " + args);
+		logService.getLogStream().sample(1, SECONDS).toBlocking().subscribe(System.out::print);
     }
 
 

@@ -1,4 +1,4 @@
-package se.callista.rxjava.chunked.backpressure;
+package se.callista.rxjava;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.logging.LogLevel;
@@ -13,21 +13,22 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPInputStream;
 
-public class LogServer {
+public class LogStreamServer {
 
-	static Logger logger = LoggerFactory.getLogger(LogServer.class);
+	static Logger logger = LoggerFactory.getLogger(LogStreamServer.class);
+
 	private static final int DEFAULT_THROTTLE = 1;
 	private static final int PORT = 8090;
 
 	public static void main(String[] args) throws IOException {
-		InputStream fileStream = LogServer.class.getResourceAsStream("NASA_access_log_Jul95.gz");
+		InputStream fileStream = LogStreamServer.class.getResourceAsStream("NASA_access_log_Jul95.gz");
 		InputStream gzipStream = new GZIPInputStream(fileStream);
 		Reader decoder = new InputStreamReader(gzipStream, "UTF-8");
 		BufferedReader logfile = new BufferedReader(decoder);
 
 		HttpServer<ByteBuf, ByteBuf> server;
 
-		server = HttpServer.newServer(8080)
+		server = HttpServer.newServer(PORT)
 				.enableWireLogging("streaming-server", LogLevel.TRACE)
 				.start((req, resp) -> {
 
@@ -43,8 +44,8 @@ public class LogServer {
 					return resp.writeStringAndFlushOnEach(
 							Observable.interval(throttle, TimeUnit.MILLISECONDS)
 									.onBackpressureBuffer(10)
-									.zipWith(logStream, (a, b) -> a + "\n")
-									.doOnNext(LogServer::log)
+									.zipWith(logStream, (tick, logrow) -> logrow + "\n")
+									.doOnNext(LogStreamServer::log)
 					);
 				});
 

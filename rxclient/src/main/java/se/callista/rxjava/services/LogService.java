@@ -1,4 +1,4 @@
-package se.callista.cadec2017.services;
+package se.callista.rxjava.services;
 
 
 import io.netty.buffer.ByteBuf;
@@ -25,7 +25,7 @@ public class LogService {
 
 		HttpClient<ByteBuf, ByteBuf> client = RxNetty.createHttpClient("localhost", 8090, configurator);
 
-		return client.submit(HttpClientRequest.createGet("/chunkedResponse?throttle=" + throttle))
+		return client.submit(HttpClientRequest.createGet("/logstream?throttle=" + throttle))
 				.flatMap(response ->
 						response.getContent().map(content ->
 								content.toString(Charset.defaultCharset())
