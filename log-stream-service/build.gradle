@@ -15,3 +15,7 @@ dependencies {
     compile "ch.qos.logback:logback-classic:${logback_version}"
     compile "ch.qos.logback:logback-core:${logback_version}"
 }
+
+apply plugin: 'application'
+
+mainClassName = "se.callista.rxjava.chunked.backpressure.LogServer"

@@ -23,7 +23,7 @@ public class LogService {
 	public Observable<String> getLogStream() {
 		PipelineConfigurator<HttpClientResponse<ByteBuf>, HttpClientRequest<ByteBuf>> configurator = new HttpClientPipelineConfigurator<>();
 
-		HttpClient<ByteBuf, ByteBuf> client = RxNetty.createHttpClient("localhost", 8080, configurator);
+		HttpClient<ByteBuf, ByteBuf> client = RxNetty.createHttpClient("localhost", 8090, configurator);
 
 		return client.submit(HttpClientRequest.createGet("/chunkedResponse?throttle=" + throttle))
 				.flatMap(response ->

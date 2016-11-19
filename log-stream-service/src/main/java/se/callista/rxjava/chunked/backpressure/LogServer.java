@@ -17,6 +17,7 @@ public class LogServer {
 
 	static Logger logger = LoggerFactory.getLogger(LogServer.class);
 	private static final int DEFAULT_THROTTLE = 1;
+	private static final int PORT = 8090;
 
 	public static void main(String[] args) throws IOException {
 		InputStream fileStream = LogServer.class.getResourceAsStream("NASA_access_log_Jul95.gz");
