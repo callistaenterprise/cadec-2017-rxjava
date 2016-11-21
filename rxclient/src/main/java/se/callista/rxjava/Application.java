@@ -9,10 +9,9 @@ public class Application {
 	private LogService logService = new LogService();
 
     public static void main(String... args) throws Exception {
-		System.out.println("args = " + args);
-
 	    Application application = new Application();
-		application.logService.getLogStream(100).sample(1, SECONDS).toBlocking().subscribe(System.out::print);
+//	    application.logService.getLogStream(100).sample(1, SECONDS).toBlocking().subscribe(System.out::print);
+	    application.logService.getWaypointStream().toBlocking().subscribe(System.out::print);
     }
 
 

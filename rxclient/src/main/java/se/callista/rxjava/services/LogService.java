@@ -26,4 +26,18 @@ public class LogService {
 						));
 
 	}
+
+	public Observable<String> getWaypointStream() {
+		PipelineConfigurator<HttpClientResponse<ByteBuf>, HttpClientRequest<ByteBuf>> configurator = new HttpClientPipelineConfigurator<>();
+
+		HttpClient<ByteBuf, ByteBuf> client = RxNetty.createHttpClient("localhost", 8070, configurator);
+
+		return client.submit(HttpClientRequest.createGet("/waypointstream?speed=50&truckId=1&lat=57.484345&lng=12.008857"))
+				.mergeWith(client.submit(HttpClientRequest.createGet("/waypointstream?speed=50&truckId=2&lat=57.484345&lng=12.008857")))
+				.flatMap(response ->
+						response.getContent().map(content ->
+								content.toString(Charset.defaultCharset())
+						));
+
+	}
 }
