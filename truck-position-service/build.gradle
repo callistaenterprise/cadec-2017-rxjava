@@ -4,7 +4,7 @@ version projectVersion
 apply plugin: 'java'
 apply plugin: 'application'
 
-mainClassName = "se.callista.rxjava.Application"
+mainClassName = "se.callista.rxjava.TruckPositionServer"
 
 jar {
     baseName = projectName

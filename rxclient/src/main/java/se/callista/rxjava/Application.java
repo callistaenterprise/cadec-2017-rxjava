@@ -1,18 +1,13 @@
 package se.callista.rxjava;
 
-import se.callista.rxjava.services.LogService;
-
-import static java.util.concurrent.TimeUnit.SECONDS;
+import se.callista.rxjava.services.TruckPositionService;
 
 public class Application {
 
-	private LogService logService = new LogService();
+	private TruckPositionService truckPositionService = new TruckPositionService();
 
-    public static void main(String... args) throws Exception {
+	public static void main(String... args) throws Exception {
 	    Application application = new Application();
-//	    application.logService.getLogStream(100).sample(1, SECONDS).toBlocking().subscribe(System.out::print);
-	    application.logService.getWaypointStream().toBlocking().subscribe(System.out::print);
+	    application.truckPositionService.getTruckPositionStream().toBlocking().subscribe(System.out::print);
     }
-
-
 }
