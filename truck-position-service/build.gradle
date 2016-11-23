@@ -27,5 +27,6 @@ dependencies {
 	compile "io.netty:netty-all:${netty_version}"
 	compile "ch.qos.logback:logback-classic:${logback_version}"
 	compile "org.apache.commons:commons-collections4:${commons_collections4_version}"
+	compile "org.apache.commons:commons-lang3:${commons_lang3_version}"
 	compile "com.eclipsesource.minimal-json:minimal-json:${json_minimal_version}"
 }

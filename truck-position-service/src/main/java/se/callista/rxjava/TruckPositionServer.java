@@ -7,6 +7,7 @@ import io.reactivex.netty.protocol.http.server.HttpServerRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rx.Observable;
+import rx.observables.ConnectableObservable;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -18,43 +19,38 @@ public class TruckPositionServer {
 
 	public static void main(String[] args) {
 
-		final TruckPositions truckPositions = new TruckPositions();
+		final TripDatabase tripDatabase = new TripDatabase();
+		final DroneSimulator droneSimulator = new DroneSimulator(tripDatabase);
 
 		HttpServer.newServer(8070).start((req, resp) -> {
-			int speed = getRequestParamAsInt(req, "speed");
-			int truckId = getRequestParamAsInt(req, "truckId");
-			double lat = getRequestParamAsDouble(req, "lat");
-			double lng = getRequestParamAsDouble(req, "lng");
+			logger.debug("Receiving request, using droneSimulator {}", droneSimulator);
+			int droneId = getRequestParamAsInt(req, "droneId");
 
-			logger.debug("Speed: {}, TruckId: {}, Lat: {}, Lng: {}", speed, truckId, lat, lng);
+			logger.debug("Speed: {}, TruckId: {}, Lat: {}, Lng: {}", droneId);
 
-			final Coordinate to = new Coordinate(lat, lng);
-			final Coordinate from = truckPositions.getTruckPosition(truckId);
+			final Trip trip = tripDatabase.getTripByDrone(droneId);
 
-			logger.debug("Distance to destination: {}", distance(from, to));
+			logger.debug("Distance to destination: {}", trip.getDistance());
 
-			final List<Coordinate> waypoints = waypoints(from, to, toMetersPerSecond(speed));
-
-			final Observable<String> waypointJson = Observable.interval(1, TimeUnit.SECONDS)
-					.zipWith(Observable.from(waypoints), (tick, coordinate) ->
-							Json.object()
-									.add("id", truckId)
-									.add("lat", coordinate.getLatitude())
-									.add("long", coordinate.getLongitude()).toString() + "\n")
+			final Observable<String> droneSimulation = droneSimulator
+					.simulateDroneTrip(droneId)
+					.map(coordinate -> toJson(droneId, coordinate))
 					.doOnNext(logger::debug);
 
-			return resp.writeStringAndFlushOnEach(waypointJson);
+			return resp.writeStringAndFlushOnEach(droneSimulation);
 
 		}).awaitShutdown();
+	}
+
+	private static String toJson(int droneId, Coordinate coordinate) {
+		return Json.object()
+				.add("id", droneId)
+				.add("lat", coordinate.getLatitude())
+				.add("long", coordinate.getLongitude()).toString() + "\n";
 	}
 
 	private static int getRequestParamAsInt(HttpServerRequest<ByteBuf> req, String name) {
 		final List<String> params = req.getQueryParameters().get(name);
 		return Integer.parseInt(params.get(0));
-	}
-
-	private static double getRequestParamAsDouble(HttpServerRequest<ByteBuf> req, String name) {
-		final List<String> params = req.getQueryParameters().get(name);
-		return Double.parseDouble(params.get(0));
 	}
 }

@@ -18,8 +18,7 @@ public class TruckPositionService {
 
 		HttpClient<ByteBuf, ByteBuf> client = RxNetty.createHttpClient("localhost", 8070, configurator);
 
-		return client.submit(HttpClientRequest.createGet("/waypointstream?speed=50&truckId=1&lat=57.484345&lng=12.008857"))
-				.mergeWith(client.submit(HttpClientRequest.createGet("/waypointstream?speed=50&truckId=2&lat=57.484345&lng=12.008857")))
+		return client.submit(HttpClientRequest.createGet("/waypointstream?droneId=1"))
 				.flatMap(response ->
 						response.getContent().map(content ->
 								content.toString(Charset.defaultCharset())
