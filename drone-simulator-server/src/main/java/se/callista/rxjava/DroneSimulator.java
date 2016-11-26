@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rx.Observable;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -15,7 +14,7 @@ import static se.callista.rxjava.GeoMath.waypoints;
 
 public class DroneSimulator {
 	private TripDatabase tripDatabase;
-	private static Logger logger = LoggerFactory.getLogger(TruckPositionServer.class);
+	private static Logger logger = LoggerFactory.getLogger(DroneSimulator.class);
 
 	private Map<Integer, Observable<Coordinate>> simulations = new ConcurrentHashMap<>();
 

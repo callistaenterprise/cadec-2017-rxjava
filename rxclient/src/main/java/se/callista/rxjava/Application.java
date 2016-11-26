@@ -12,22 +12,8 @@ public class Application {
 	public static void main(String... args) throws Exception {
 	    Application application = new Application();
 
-		logger.debug("*****************************************************************");
-		logger.debug("*********************** NEW SUBSCRIBER 1 *************************");
-		logger.debug("*****************************************************************");
-
-		application.truckPositionService.getTruckPositionStream().subscribe(p -> {
-			logger.debug("{}: {}", Thread.currentThread().getName(), p);
-		});
-
-		Thread.sleep(5000);
-
-		logger.debug("*****************************************************************");
-		logger.debug("*********************** NEW SUBSCRIBER 2 *************************");
-		logger.debug("*****************************************************************");
-
-		application.truckPositionService.getTruckPositionStream().toBlocking().subscribe(p -> {
-			logger.debug("{}: {}", Thread.currentThread().getName(), p);
-		});
+		application.truckPositionService.getTruckPositionStream().toBlocking().subscribe(p ->
+			logger.debug("{}: {}", Thread.currentThread().getName(), p)
+		);
     }
 }

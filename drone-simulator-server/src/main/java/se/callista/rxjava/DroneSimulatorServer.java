@@ -7,15 +7,11 @@ import io.reactivex.netty.protocol.http.server.HttpServerRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rx.Observable;
-import rx.observables.ConnectableObservable;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
-import static se.callista.rxjava.GeoMath.*;
-
-public class TruckPositionServer {
-	private static Logger logger = LoggerFactory.getLogger(TruckPositionServer.class);
+public class DroneSimulatorServer {
+	private static Logger logger = LoggerFactory.getLogger(DroneSimulatorServer.class);
 
 	public static void main(String[] args) {
 
