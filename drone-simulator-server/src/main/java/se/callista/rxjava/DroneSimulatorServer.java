@@ -19,7 +19,7 @@ public class DroneSimulatorServer {
 		final DroneSimulator droneSimulator = new DroneSimulator(tripDatabase);
 
 		HttpServer.newServer(8070).start((req, resp) -> {
-			logger.debug("Receiving request, using droneSimulator {}", droneSimulator);
+
 			int droneId = getRequestParamAsInt(req, "droneId");
 
 			logger.debug("Speed: {}, TruckId: {}, Lat: {}, Lng: {}", droneId);

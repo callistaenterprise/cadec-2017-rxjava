@@ -1,0 +1,9 @@
+@startuml
+user --> rxclient: orderBook(isbn, pnr)
+rxclient -->> BooksApi: isbnLookup(title, author)
+rxclient -->> SPARApi: addressLookup
+rxclient -->> GeocodingApi: getCoordinates
+rxclient -->> DroneSimulator: orderBook(coordinates, book)
+rxclient --> DroneSimulator: getDroneStream(droneId)
+rxclient --> user: showDroneStream
+@enduml
