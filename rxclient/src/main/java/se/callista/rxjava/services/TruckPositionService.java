@@ -7,10 +7,12 @@ import io.reactivex.netty.protocol.http.client.HttpClient;
 import io.reactivex.netty.protocol.http.client.HttpClientPipelineConfigurator;
 import io.reactivex.netty.protocol.http.client.HttpClientRequest;
 import io.reactivex.netty.protocol.http.client.HttpClientResponse;
+import org.springframework.stereotype.Service;
 import rx.Observable;
 
 import java.nio.charset.Charset;
 
+@Service
 public class TruckPositionService {
 
 	public Observable<String> getTruckPositionStream() {
