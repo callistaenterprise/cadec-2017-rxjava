@@ -23,15 +23,14 @@ public class DroneSimulator {
 		this.tripDatabase = tripDatabase;
 	}
 
-	public synchronized Observable<Coordinate> simulateDroneTrip(int droneId) {
-		logger.debug("Simulating trip for drone {}", droneId);
+	public synchronized Observable<Coordinate> simulateDroneTrip(Trip trip) {
 
-		if (simulations.containsKey(droneId)) {
-			logger.debug("Reuse simulated trip {}", droneId);
-			return simulations.get(droneId);
-		}
-
-		final Trip trip = tripDatabase.getTripByDrone(droneId);
+//		if (simulations.containsKey(droneId)) {
+//			logger.debug("Reuse simulated trip {}", droneId);
+//			return simulations.get(droneId);
+//		}
+//
+//		final Trip trip = tripDatabase.getTripByDrone(droneId);
 
 		final List<Coordinate> waypoints = waypoints(trip.getFrom(), trip.getTo(), toMetersPerSecond(trip.getSpeed()));
 
@@ -39,8 +38,8 @@ public class DroneSimulator {
 				.zipWith(Observable.from(waypoints), (tick, coordinate) -> coordinate).publish().autoConnect();
 
 
-		logger.debug("Put simulated trip in cache {}", droneId);
-		simulations.put(droneId, simulatedTrip);
+//		logger.debug("Put simulated trip in cache {}", droneId);
+//		simulations.put(droneId, simulatedTrip);
 
 		return simulatedTrip;
 

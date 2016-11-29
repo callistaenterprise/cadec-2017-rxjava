@@ -13,14 +13,14 @@ import rx.Observable;
 import java.nio.charset.Charset;
 
 @Service
-public class TruckPositionService {
+public class DronePositionService {
 
-	public Observable<String> getTruckPositionStream() {
+	public Observable<String> getDronePositionStream() {
 		PipelineConfigurator<HttpClientResponse<ByteBuf>, HttpClientRequest<ByteBuf>> configurator = new HttpClientPipelineConfigurator<>();
 
 		HttpClient<ByteBuf, ByteBuf> client = RxNetty.createHttpClient("localhost", 8070, configurator);
 
-		return client.submit(HttpClientRequest.createGet("/waypointstream?droneId=1"))
+		return client.submit(HttpClientRequest.createGet("/dronepositionstream?droneId=1"))
 				.flatMap(response ->
 						response.getContent().map(content ->
 								content.toString(Charset.defaultCharset())

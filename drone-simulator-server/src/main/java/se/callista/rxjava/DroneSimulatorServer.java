@@ -12,6 +12,8 @@ import java.util.List;
 
 public class DroneSimulatorServer {
 	private static Logger logger = LoggerFactory.getLogger(DroneSimulatorServer.class);
+	private static Coordinate droneBaseStation = new Coordinate(57.703472, 11.992584);
+	private static final int SPEED = 150;
 
 	public static void main(String[] args) {
 
@@ -20,17 +22,26 @@ public class DroneSimulatorServer {
 
 		HttpServer.newServer(8070).start((req, resp) -> {
 
-			int droneId = getRequestParamAsInt(req, "droneId");
+			double lat = getRequestParamAsDouble(req, "lat");
+			double lng = getRequestParamAsDouble(req, "long");
 
-			logger.debug("Speed: {}, TruckId: {}, Lat: {}, Lng: {}", droneId);
+			logger.debug("Lat: {}, Long: {}", lat, lng);
+			Coordinate to = new Coordinate(lat, lng);
 
-			final Trip trip = tripDatabase.getTripByDrone(droneId);
+			Trip trip;
+
+			if (tripDatabase.containsTripTo(to)) {
+				trip = tripDatabase.getTripTo(to);
+			} else {
+				trip = new Trip(droneBaseStation, to, SPEED);
+				tripDatabase.addTrip(trip);
+			}
 
 			logger.debug("Distance to destination: {}", trip.getDistance());
 
 			final Observable<String> droneSimulation = droneSimulator
-					.simulateDroneTrip(droneId)
-					.map(coordinate -> toJson(droneId, coordinate))
+					.simulateDroneTrip(trip)
+					.map(coordinate -> toJson(coordinate))
 					.doOnNext(logger::debug);
 
 			return resp.writeStringAndFlushOnEach(droneSimulation);
@@ -38,15 +49,15 @@ public class DroneSimulatorServer {
 		}).awaitShutdown();
 	}
 
-	private static String toJson(int droneId, Coordinate coordinate) {
+	private static String toJson(Coordinate coordinate) {
 		return Json.object()
-				.add("id", droneId)
+//				.add("id", droneId)
 				.add("lat", coordinate.getLatitude())
 				.add("long", coordinate.getLongitude()).toString() + "\n";
 	}
 
-	private static int getRequestParamAsInt(HttpServerRequest<ByteBuf> req, String name) {
+	private static double getRequestParamAsDouble(HttpServerRequest<ByteBuf> req, String name) {
 		final List<String> params = req.getQueryParameters().get(name);
-		return Integer.parseInt(params.get(0));
+		return Double.parseDouble(params.get(0));
 	}
 }
