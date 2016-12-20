@@ -13,33 +13,32 @@ import static se.callista.rxjava.GeoMath.toMetersPerSecond;
 import static se.callista.rxjava.GeoMath.waypoints;
 
 public class DroneSimulator {
-	private TripDatabase tripDatabase;
 	private static Logger logger = LoggerFactory.getLogger(DroneSimulator.class);
 
-	private Map<Integer, Observable<Coordinate>> simulations = new ConcurrentHashMap<>();
+	private Map<Trip, Observable<Coordinate>> simulations = new ConcurrentHashMap<>();
 
-	public DroneSimulator(TripDatabase tripDatabase) {
+	public DroneSimulator() {
 		logger.debug("Creating new DroneSimulator");
-		this.tripDatabase = tripDatabase;
 	}
 
-	public synchronized Observable<Coordinate> simulateDroneTrip(Trip trip) {
+	public synchronized Observable<Coordinate> simulateDroneTrip(Trip trip, long sampleInterval) {
 
-//		if (simulations.containsKey(droneId)) {
-//			logger.debug("Reuse simulated trip {}", droneId);
-//			return simulations.get(droneId);
-//		}
-//
-//		final Trip trip = tripDatabase.getTripByDrone(droneId);
+		if (simulations.containsKey(trip)) {
+			logger.debug("Reuse simulated trip {}", trip);
+			return simulations.get(trip);
+		}
 
-		final List<Coordinate> waypoints = waypoints(trip.getFrom(), trip.getTo(), toMetersPerSecond(trip.getSpeed()));
+		final double sampledSpeed = toMetersPerSecond(trip.getSpeed()) * ((double)sampleInterval / 1000);
+		final List<Coordinate> waypoints = waypoints(trip.getFrom(), trip.getTo(), sampledSpeed);
 
-		final Observable<Coordinate> simulatedTrip = Observable.interval(1, TimeUnit.SECONDS)
-				.zipWith(Observable.from(waypoints), (tick, coordinate) -> coordinate).publish().autoConnect();
+		final Observable<Coordinate> simulatedTrip = Observable.interval(sampleInterval, TimeUnit.MILLISECONDS)
+				.zipWith(Observable.from(waypoints), (tick, coordinate) -> coordinate)
+				.doOnCompleted(() -> simulations.remove(trip))
+				.publish().autoConnect();
 
 
-//		logger.debug("Put simulated trip in cache {}", droneId);
-//		simulations.put(droneId, simulatedTrip);
+		logger.debug("Put simulated trip in cache {}", trip);
+		simulations.put(trip, simulatedTrip);
 
 		return simulatedTrip;
 

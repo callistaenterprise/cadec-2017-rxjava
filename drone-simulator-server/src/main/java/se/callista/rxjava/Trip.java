@@ -1,5 +1,7 @@
 package se.callista.rxjava;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -37,5 +39,29 @@ public class Trip {
 				.append("to", to)
 				.append("speed", speed)
 				.toString();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+
+		if (o == null || getClass() != o.getClass()) return false;
+
+		Trip trip = (Trip) o;
+
+		return new EqualsBuilder()
+				.append(speed, trip.speed)
+				.append(from, trip.from)
+				.append(to, trip.to)
+				.isEquals();
+	}
+
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder(17, 37)
+				.append(from)
+				.append(to)
+				.append(speed)
+				.toHashCode();
 	}
 }
