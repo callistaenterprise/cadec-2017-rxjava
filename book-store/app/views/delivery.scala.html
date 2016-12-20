@@ -42,11 +42,25 @@
                   center: {lat: 57.704384, lng: 11.978458}
                 }
 
+                var infowindow = new google.maps.InfoWindow({
+                    content: "<div>" +
+                    "<ul>" +
+                        "<li>@order.getBook.title</li>" +
+                        "<li>@order.getBook.author</li>" +
+                        "<li>@order.getBook.isbn13</li>" +
+                    "</ul>" +
+                    "</div>"
+                });
+
                 var map = new google.maps.Map(document.getElementById("map"), mapOptions);
 
                 marker = new google.maps.Marker({
                     icon: image,
                     map: map
+                });
+
+                marker.addListener('click', function() {
+                    infowindow.open(map, marker);
                 });
             }
 
