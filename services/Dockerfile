@@ -9,5 +9,5 @@ COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 WORKDIR /app
 RUN chmod 775 *.py
 RUN pip install -r requirements.txt
-EXPOSE 9080 9081
+EXPOSE 9080 9081 9082
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
