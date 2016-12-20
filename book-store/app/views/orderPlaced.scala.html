@@ -1,0 +1,17 @@
+@import model.Order
+
+@(order: Order)
+
+@main("Drone book store") {
+
+    <ul>
+        <li>@order.getBook.title</li>
+        <li>@order.getBook.author</li>
+        <li>@order.getBook.isbn13</li>
+    </ul>
+
+    Follow the link to follow the delivery to your address:
+    <a href="@routes.BookStoreController.showDelivery(order.getOrderId)" target="_blank">
+        @routes.BookStoreController.showDelivery(order.getOrderId).absoluteURL()
+    </a>
+}

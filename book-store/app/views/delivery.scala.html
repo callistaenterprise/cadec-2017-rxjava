@@ -1,0 +1,70 @@
+@import model.Order
+
+@(order: Order)
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+        <meta charset="utf-8">
+        <style>
+        /* Always set the delivery height explicitly to define the size of the div
+         * element that contains the delivery. */
+        #map {
+            height: 100%;
+        }
+
+        /* Optional: Makes the sample page fill the window. */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        </style>
+    </head>
+    <body>
+        <div id="map"></div>
+        <script>
+            var marker;
+            function initMap() {
+                var image = {
+                    url: '@routes.Assets.versioned("images/drone_blue_64_64.png")',
+                    // This marker is 20 pixels wide by 32 pixels high.
+                    size: new google.maps.Size(64, 64),
+                    // The origin for this image is (0, 0).
+                    origin: new google.maps.Point(0, 0),
+                    // The anchor for this image is the center of the image.
+                    anchor: new google.maps.Point(32, 32)
+                };
+
+                var mapOptions = {
+                  zoom: 16,
+                  center: {lat: 57.704384, lng: 11.978458}
+                }
+
+                var map = new google.maps.Map(document.getElementById("map"), mapOptions);
+
+                marker = new google.maps.Marker({
+                    icon: image,
+                    map: map
+                });
+            }
+
+
+            var source = new EventSource("http://@request().remoteAddress():8070/droneStream?lat=@order.getCoordinates.lat&long=@order.getCoordinates.lon");
+            source.onmessage = function (event) {
+                var coords = JSON.parse(event.data);
+                console.log(coords.lat)
+                marker.setPosition({lat: coords.lat, lng: coords.lng});
+            };
+
+            source.addEventListener("stop", function(e) {
+                source.close();
+            }, false);
+
+    </script>
+        <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBIWAnqMIFvi7pcRW2p68YHNKKZGHyiQH0&callback=initMap">
+    </script>
+    </body>
+</html>

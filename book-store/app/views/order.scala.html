@@ -1,0 +1,12 @@
+@import model.OrderForm
+@(orderForm: Form[OrderForm])
+@import b4.vertical.fieldConstructor
+
+@main("Drone book store") {
+    @b4.form(action = routes.BookStoreController.placeOrder) {
+        @b4.text(orderForm("bookTitle"), '_label -> "Titel")
+        @b4.text(orderForm("bookAuthor"), '_label -> "Författare")
+        @b4.text(orderForm("pnr"), '_label -> "Personnummer", '_help -> "197503259280")
+        @b4.submit('class -> "btn btn-default"){ Skicka order }
+    }
+}

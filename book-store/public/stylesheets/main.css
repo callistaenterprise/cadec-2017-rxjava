@@ -1,0 +1,9 @@
+body {
+	width: 855px;
+	margin:0 auto;
+}
+
+#map {
+	height: 50%;
+	width: 50%;
+}
