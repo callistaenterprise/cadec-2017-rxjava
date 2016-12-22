@@ -67,9 +67,11 @@ public class BookStoreController extends Controller {
 		return personnummerService.getAddressByPersonnummer(orderForm.getPnr())
 				.zipWith(booksService.getBook(orderForm.getBookTitle(), orderForm.getBookAuthor()),
 						(address, book) -> new Order(book, address))
-				.flatMap(order -> coordinateService.getCoordinate(order.getAddress()).map(order::setCoordinates))
+				.flatMap(order ->
+						coordinateService.getCoordinateBroken(order.getAddress())
+								.onErrorResumeNext(coordinateService.getCoordinate(order.getAddress()))
+								.map(order::setCoordinates))
 				.flatMap(order -> bookOrderService.sendOrder(order));
 
 	}
-
 }

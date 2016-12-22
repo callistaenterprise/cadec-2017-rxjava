@@ -2,25 +2,25 @@ coordinate_data = {
     "kungsbacka": {
         "coords": {
             "lat": "57.486106",
-            "lon": "12.074773"
+            "lng": "12.074773"
         }
     },
     "goteborg": {
         "coords": {
             "lat": "57.703062",
-            "lon": "11.992746"
+            "lng": "11.992746"
         }
     },
     "molnycke": {
         "coords": {
             "lat": "57.658945",
-            "lon": "12.117010"
+            "lng": "12.117010"
         }
     },
     "kungalv": {
         "coords": {
             "lat": "57.871530",
-            "lon": "11.976075"
+            "lng": "11.976075"
         }
     }
 }
@@ -51,17 +51,17 @@ books_data = {
 personnummer_data = {
     "197503259280": {
         "name": "Anders Asplund",
-        "address": "Fabriksgatan 25",
+        "street": "Fabriksgatan 25",
         "city": "Goteborg"
     },
     "198407119281": {
         "name": "Par Wenaker",
-        "address": "Villavagen 33",
+        "street": "Villavagen 33",
         "city": "Molnycke"
     },
     "191212121212": {
         "name": "Tolvan Tolvansson",
-        "address": "Tolvanstigen 12",
+        "street": "Tolvanstigen 12",
         "city": "Kungalv"
     }
 }

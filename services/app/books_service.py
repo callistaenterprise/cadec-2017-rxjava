@@ -9,7 +9,7 @@ app = Flask(__name__)
 
 @app.route('/books')
 def books():
-    time.sleep(1)
+    # time.sleep(1)
 
     the_book = books_data['books']
 

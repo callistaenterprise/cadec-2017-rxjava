@@ -25,6 +25,13 @@ public class CoordinateService {
 				.map(json -> Json.fromJson(json, Coordinates.class));
 	}
 
+	public Single<Coordinates> getCoordinateBroken(Address address) {
+		return toSingle(ws.url("http://192.168.99.100:9089/").get())
+				.map(WSResponse::asJson)
+				.map(json -> Json.fromJson(json, Coordinates.class));
+
+	}
+
 	private static String urlEncode(String value) {
 		try {
 			return URLEncoder.encode(value, "UTF-8");

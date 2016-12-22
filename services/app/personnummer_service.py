@@ -10,7 +10,7 @@ app = Flask(__name__)
 
 @app.route("/<pnr>")
 def coordinate(pnr):
-    time.sleep(1)
+    # time.sleep(1)
     return jsonify(personnummer_data[pnr.lower()])
 
 if __name__ == "__main__":

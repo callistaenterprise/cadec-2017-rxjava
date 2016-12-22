@@ -4,13 +4,21 @@
 
 @main("Drone book store") {
 
+    The Book:
     <ul>
         <li>@order.getBook.title</li>
         <li>@order.getBook.author</li>
         <li>@order.getBook.isbn13</li>
     </ul>
 
-    Follow the link to follow the delivery to your address:
+    will be delivered to
+    <ul>
+        <li>@order.getAddress.name</li>
+        <li>@order.getAddress.street</li>
+        <li>@order.getAddress.city</li>
+    </ul>
+
+    Follow the drone delivery:
     <a href="@routes.BookStoreController.showDelivery(order.getOrderId)" target="_blank">
         @routes.BookStoreController.showDelivery(order.getOrderId).absoluteURL()
     </a>

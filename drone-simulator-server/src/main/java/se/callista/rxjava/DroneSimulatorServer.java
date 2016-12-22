@@ -1,6 +1,5 @@
 package se.callista.rxjava;
 
-import com.eclipsesource.json.Json;
 import io.netty.buffer.ByteBuf;
 import io.reactivex.netty.protocol.http.server.HttpServer;
 import io.reactivex.netty.protocol.http.server.HttpServerRequest;
@@ -9,12 +8,11 @@ import org.slf4j.LoggerFactory;
 import rx.Observable;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public class DroneSimulatorServer {
 	private static Logger logger = LoggerFactory.getLogger(DroneSimulatorServer.class);
 	private static Coordinate droneBaseStation = new Coordinate(57.706324, 11.963436);
-	private static final int SPEED = 80;
+	private static final int SPEED = 150;
 
 	public static void main(String[] args) {
 
@@ -23,9 +21,9 @@ public class DroneSimulatorServer {
 		HttpServer.newServer(8070).start((req, resp) -> {
 
 			double lat = getRequestParamAsDouble(req, "lat");
-			double lng = getRequestParamAsDouble(req, "long");
+			double lng = getRequestParamAsDouble(req, "lng");
 
-			logger.debug("Lat: {}, Long: {}", lat, lng);
+			logger.debug("Lat: {}, Lng: {}", lat, lng);
 			Coordinate to = new Coordinate(lat, lng);
 
 			Trip trip = new Trip(droneBaseStation, to, SPEED);
@@ -47,13 +45,12 @@ public class DroneSimulatorServer {
 	}
 
 	private static String toJson(Coordinate coordinate) {
-		return Json.object()
-				.add("lat", coordinate.getLatitude())
-				.add("lng", coordinate.getLongitude()).toString();
+		return "{\"lat\":" + coordinate.getLat() + ", \"lng\":" + coordinate.getLng() + "}";
 	}
 
 	private static double getRequestParamAsDouble(HttpServerRequest<ByteBuf> req, String name) {
 		final List<String> params = req.getQueryParameters().get(name);
 		return Double.parseDouble(params.get(0));
 	}
+
 }

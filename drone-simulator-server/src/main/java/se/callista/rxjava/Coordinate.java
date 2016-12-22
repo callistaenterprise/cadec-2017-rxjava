@@ -4,29 +4,25 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 public class Coordinate {
-	private double longitude;
-	private double latitude;
+	private double lng;
+	private double lat;
 
-	public Coordinate(double latitude, double longitude) {
-		this.longitude = longitude;
-		this.latitude = latitude;
+	public Coordinate(double lat, double lng) {
+		this.lng = lng;
+		this.lat = lat;
 	}
 
-	public double getLongitude() {
-		return longitude;
+	public double getLng() {
+		return lng;
 	}
 
-	public double getLatitude() {
-		return latitude;
+	public double getLat() {
+		return lat;
 	}
-
 
 	@Override
 	public String toString() {
-		return "Coordinate{" +
-				"longitude=" + longitude +
-				", latitude=" + latitude +
-				'}';
+		return "Coordinate: {lat = " + lat + ", lng = " + lng + '}';
 	}
 
 	@Override
@@ -38,16 +34,16 @@ public class Coordinate {
 		Coordinate that = (Coordinate) o;
 
 		return new EqualsBuilder()
-				.append(longitude, that.longitude)
-				.append(latitude, that.latitude)
+				.append(lng, that.lng)
+				.append(lat, that.lat)
 				.isEquals();
 	}
 
 	@Override
 	public int hashCode() {
 		return new HashCodeBuilder(17, 37)
-				.append(longitude)
-				.append(latitude)
+				.append(lat)
+				.append(lng)
 				.toHashCode();
 	}
 }

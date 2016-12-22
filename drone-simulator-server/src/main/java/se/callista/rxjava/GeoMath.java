@@ -11,10 +11,10 @@ public class GeoMath {
 
 
 	public static List<Coordinate> waypoints(Coordinate from, Coordinate to, double distanceBetween) {
-		final double lat1 = toRadians(from.getLatitude());
-		final double lat2 = toRadians(to.getLatitude());
-		final double long1 = toRadians(from.getLongitude());
-		final double long2 = toRadians(to.getLongitude());
+		final double lat1 = toRadians(from.getLat());
+		final double lat2 = toRadians(to.getLat());
+		final double long1 = toRadians(from.getLng());
+		final double long2 = toRadians(to.getLng());
 
 		double d = r * acos(sin(lat1) * sin(lat2) + cos(lat1) * cos(lat2) * cos(long2 - long1)) * 1000;
 		double θ = atan2(sin(long2 - long1) * cos(lat2), cos(lat1) * sin(lat2) - sin(lat1) * cos(lat2) * cos(long2 - long1));
@@ -28,8 +28,8 @@ public class GeoMath {
 
 
 	public static double distance(Coordinate from, Coordinate to) {
-		double theta = from.getLongitude() - to.getLongitude();
-		double dist = sin(toRadians(from.getLatitude())) * sin(toRadians(to.getLatitude())) + cos(toRadians(from.getLatitude())) * cos(toRadians(to.getLatitude())) * cos(toRadians(theta));
+		double theta = from.getLng() - to.getLng();
+		double dist = sin(toRadians(from.getLat())) * sin(toRadians(to.getLat())) + cos(toRadians(from.getLat())) * cos(toRadians(to.getLat())) * cos(toRadians(theta));
 
 		dist = acos(dist);
 		dist = toDegrees(dist);
@@ -40,8 +40,8 @@ public class GeoMath {
 	}
 
 	private static Coordinate waypoint(Coordinate c, double θ, double d) {
-		final double lat1 = toRadians(c.getLatitude());
-		final double long1 = toRadians(c.getLongitude());
+		final double lat1 = toRadians(c.getLat());
+		final double long1 = toRadians(c.getLng());
 
 		d = d / 1000;
 		double lat2 = asin(sin(lat1) * cos(d / r) + cos(lat1) * sin(d / r) * cos(θ));
