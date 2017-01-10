@@ -20,12 +20,26 @@
             margin: 0;
             padding: 0;
         }
+        .infowindow {
+            font-size: 200%;
+        }
         </style>
     </head>
     <body>
         <div id="map"></div>
         <script>
             var marker;
+            var infowindow;
+
+            function getContentWithETA(eta) {
+                return "<div class='infowindow'>" +
+                        "<strong>Title:</strong> @order.getBook.title<br/>" +
+                        "<strong>Authors:</strong> @order.getBook.author<br/>" +
+                        "<strong>ISBN:</strong> @order.getBook.isbn13<br/>" +
+                        "<strong>ETA:</strong> " + eta + " seconds<br/>" +
+                        "</div>"
+            }
+
             function initMap() {
                 var image = {
                     url: '@routes.Assets.versioned("images/drone_blue_64_64.png")',
@@ -39,23 +53,17 @@
                   center: {lat: 57.704384, lng: 11.978458}
                 }
 
-                var infowindow = new google.maps.InfoWindow({
-                    content: "<div>" +
-                    "<ul>" +
-                        "<li>@order.getBook.title</li>" +
-                        "<li>@order.getBook.author</li>" +
-                        "<li>@order.getBook.isbn13</li>" +
-                    "</ul>" +
-                    "</div>"
+
+                infowindow = new google.maps.InfoWindow({
+                    content: getContentWithETA(@order.getCoordinates.eta)
                 });
 
                 var infowindowDestination = new google.maps.InfoWindow({
-                    content: "<div>" +
-                    "<ul>" +
-                    "<li>@order.getAddress.name</li>" +
-                    "<li>@order.getAddress.street</li>" +
-                    "<li>@order.getAddress.city</li>" +
-                    "</ul>" +
+                    content: "<div class='infowindow'>" +
+                    "<strong>Leveransadress</strong><br/> " +
+                    "@order.getAddress.name<br/>" +
+                    "@order.getAddress.street<br/>" +
+                    "@order.getAddress.city<br/>" +
                     "</div>"
                 });
                 var map = new google.maps.Map(document.getElementById("map"), mapOptions);
@@ -84,6 +92,7 @@
                 console.log(event.data)
                 var coords = JSON.parse(event.data);
                 marker.setPosition({lat: coords.lat, lng: coords.lng});
+                infowindow.setContent(getContentWithETA(coords.eta));
             };
 
             source.addEventListener("stop", function(e) {

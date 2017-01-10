@@ -3,9 +3,11 @@ package services;
 import io.reactivex.Single;
 import model.Order;
 
+import javax.inject.Singleton;
 import java.util.HashMap;
 import java.util.Map;
 
+@Singleton
 public class BookOrderService {
 	private Map<Integer, Order> orders = new HashMap<>();
 

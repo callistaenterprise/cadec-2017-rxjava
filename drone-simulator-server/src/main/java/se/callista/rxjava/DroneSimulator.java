@@ -21,21 +21,22 @@ public class DroneSimulator {
 		logger.debug("Creating new DroneSimulator");
 	}
 
-	public synchronized Observable<Coordinate> simulateDroneTrip(Trip trip, long sampleInterval) {
+	public synchronized Observable<Coordinate> simulateDroneTrip(Trip trip, long samplingTime) {
 
 		if (simulations.containsKey(trip)) {
 			logger.debug("Reuse simulated trip {}", trip);
 			return simulations.get(trip);
 		}
 
-		final double sampledSpeed = toMetersPerSecond(trip.getSpeed()) * ((double)sampleInterval / 1000);
-		final List<Coordinate> waypoints = waypoints(trip.getFrom(), trip.getTo(), sampledSpeed);
+		final double samplingDistance = toMetersPerSecond(trip.getSpeed()) * ((double)samplingTime / 1000);
+		final Observable<Coordinate> coordinateStream = waypoints(trip.getFrom(), trip.getTo(), samplingDistance);
 
-		final Observable<Coordinate> simulatedTrip = Observable.interval(sampleInterval, TimeUnit.MILLISECONDS)
-				.zipWith(Observable.from(waypoints), (tick, coordinate) -> coordinate)
-				.doOnCompleted(() -> simulations.remove(trip))
-				.publish().autoConnect();
-
+		final Observable<Coordinate> simulatedTrip =
+				Observable.interval(samplingTime, TimeUnit.MILLISECONDS)
+						.zipWith(coordinateStream, (tick, coordinate) -> coordinate)
+						.doOnCompleted(() -> simulations.remove(trip))
+						.publish().autoConnect()
+				;
 
 		logger.debug("Put simulated trip in cache {}", trip);
 		simulations.put(trip, simulatedTrip);

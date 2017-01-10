@@ -12,7 +12,7 @@ import java.util.List;
 public class DroneSimulatorServer {
 	private static Logger logger = LoggerFactory.getLogger(DroneSimulatorServer.class);
 	private static Coordinate droneBaseStation = new Coordinate(57.706324, 11.963436);
-	private static final int SPEED = 150;
+	private static final int SPEED = 350;
 
 	public static void main(String[] args) {
 
@@ -25,17 +25,17 @@ public class DroneSimulatorServer {
 
 			logger.debug("Lat: {}, Lng: {}", lat, lng);
 			Coordinate to = new Coordinate(lat, lng);
-
 			Trip trip = new Trip(droneBaseStation, to, SPEED);
-
 			logger.debug("Distance to destination: {}", trip.getDistance());
+
 
 			final Observable<String> droneSimulation = droneSimulator
 					.simulateDroneTrip(trip, 100)
-					.map(coordinate -> toJson(coordinate))
+					.map(currentPosition -> toJson(currentPosition, trip))
 					.map(json -> "data: " + json + "\n\n")
 					.concatWith(Observable.just("event: stop\ndata:\n\n"))
 					.doOnNext(logger::debug);
+
 			return resp
 					.setHeader("Access-Control-Allow-Origin", "*")
 					.setHeader("Content-Type", "text/event-stream")
@@ -44,8 +44,8 @@ public class DroneSimulatorServer {
 		}).awaitShutdown();
 	}
 
-	private static String toJson(Coordinate coordinate) {
-		return "{\"lat\":" + coordinate.getLat() + ", \"lng\":" + coordinate.getLng() + "}";
+	private static String toJson(Coordinate coordinate, Trip trip) {
+		return "{\"lat\":" + coordinate.getLat() + ", \"lng\":" + coordinate.getLng() + ", \"eta\":" + Math.round(trip.getEta(coordinate)) + "}";
 	}
 
 	private static double getRequestParamAsDouble(HttpServerRequest<ByteBuf> req, String name) {

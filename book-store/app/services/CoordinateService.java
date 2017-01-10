@@ -8,11 +8,13 @@ import play.libs.ws.WSClient;
 import play.libs.ws.WSResponse;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 import static utils.FutureUtils.toSingle;
 
+@Singleton
 public class CoordinateService {
 
 	@Inject WSClient ws;

@@ -1,5 +1,7 @@
 package se.callista.rxjava;
 
+import rx.Observable;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +12,7 @@ public class GeoMath {
 	private static double r = 6371.0;
 
 
-	public static List<Coordinate> waypoints(Coordinate from, Coordinate to, double distanceBetween) {
+	public static Observable<Coordinate> waypoints(Coordinate from, Coordinate to, double distanceBetween) {
 		final double lat1 = toRadians(from.getLat());
 		final double lat2 = toRadians(to.getLat());
 		final double long1 = toRadians(from.getLng());
@@ -23,7 +25,7 @@ public class GeoMath {
 		for (int n = 0; n <= d; n += distanceBetween) {
 			waypoints.add(waypoint(from, θ, n));
 		}
-		return waypoints;
+		return Observable.from(waypoints);
 	}
 
 

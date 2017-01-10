@@ -4,22 +4,41 @@
 
 @main("Drone book store") {
 
-    The Book:
-    <ul>
-        <li>@order.getBook.title</li>
-        <li>@order.getBook.author</li>
-        <li>@order.getBook.isbn13</li>
-    </ul>
-
-    will be delivered to
-    <ul>
-        <li>@order.getAddress.name</li>
-        <li>@order.getAddress.street</li>
-        <li>@order.getAddress.city</li>
-    </ul>
-
-    Follow the drone delivery:
-    <a href="@routes.BookStoreController.showDelivery(order.getOrderId)" target="_blank">
-        @routes.BookStoreController.showDelivery(order.getOrderId).absoluteURL()
-    </a>
+    <p>
+    @if(order.book != null) {
+        The Book:
+        <ul>
+            <li>@order.book.title</li>
+            <li>@order.book.author</li>
+            <li>@order.book.isbn13</li>
+        </ul>
+    }
+    </p>
+    <p>
+    @if(order.address != null) {
+        will be delivered to:
+        <ul>
+            <li>@order.address.name</li>
+            <li>@order.address.street</li>
+            <li>@order.address.city</li>
+        </ul>
+    }
+    </p>
+    <p>
+    @if(order.coordinates != null) {
+        at the coordinates:
+        <ul>
+            <li>@order.coordinates.lat</li>
+            <li>@order.coordinates.lng</li>
+        </ul>
+    }
+    </p>
+    <p>
+    @if(order.orderId != null) {
+        Follow the drone delivery:
+        <a href="@routes.BookStoreController.showDelivery(order.orderId)" target="_blank">
+           @routes.BookStoreController.showDelivery(order.orderId).absoluteURL()
+        </a>
+    }
+    </p>
 }

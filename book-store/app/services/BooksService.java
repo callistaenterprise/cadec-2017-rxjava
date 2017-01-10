@@ -1,6 +1,5 @@
 package services;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import io.reactivex.Single;
 import model.Book;
 import play.libs.Json;
@@ -8,9 +7,11 @@ import play.libs.ws.WSClient;
 import play.libs.ws.WSResponse;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import static utils.FutureUtils.toSingle;
 
+@Singleton
 public class BooksService {
 
 	@Inject WSClient ws;

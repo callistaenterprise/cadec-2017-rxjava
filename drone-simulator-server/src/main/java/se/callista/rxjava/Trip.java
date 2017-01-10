@@ -41,6 +41,10 @@ public class Trip {
 				.toString();
 	}
 
+	public double getEta(Coordinate fromPosition) {
+		return GeoMath.distance(fromPosition, to) / speed * 3600;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
