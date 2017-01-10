@@ -1,6 +1,7 @@
 body {
 	width: 855px;
 	margin:0 auto;
+	font-size: 150%;
 }
 
 #map {

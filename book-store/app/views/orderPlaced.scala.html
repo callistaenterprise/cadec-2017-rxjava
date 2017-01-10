@@ -5,8 +5,8 @@
 @main("Drone book store") {
 
     <p>
-    @if(order.book != null) {
         The Book:
+    @if(order.book != null) {
         <ul>
             <li>@order.book.title</li>
             <li>@order.book.author</li>
@@ -15,8 +15,8 @@
     }
     </p>
     <p>
-    @if(order.address != null) {
         will be delivered to:
+    @if(order.address != null) {
         <ul>
             <li>@order.address.name</li>
             <li>@order.address.street</li>
@@ -25,8 +25,8 @@
     }
     </p>
     <p>
-    @if(order.coordinates != null) {
         at the coordinates:
+    @if(order.coordinates != null) {
         <ul>
             <li>@order.coordinates.lat</li>
             <li>@order.coordinates.lng</li>
