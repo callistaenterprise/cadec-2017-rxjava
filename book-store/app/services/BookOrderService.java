@@ -12,7 +12,8 @@ public class BookOrderService {
 	private Map<Integer, Order> orders = new HashMap<>();
 
 	public Single<Order> sendOrder(Order order) {
-		final Order savedOrder = order.setOrderId(orders.size() + 1);
+		System.out.println("BookOrderService.sendOrder " + order);
+		final Order savedOrder = order.withOrderId(orders.size() + 1);
 		orders.put(savedOrder.getOrderId(), savedOrder);
 		return Single.just(savedOrder);
 	}
