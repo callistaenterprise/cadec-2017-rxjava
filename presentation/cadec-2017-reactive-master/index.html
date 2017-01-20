@@ -1,0 +1,617 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>Reactive Programming with RxJava</title>
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/callista.css" id="theme">
+		<link rel="stylesheet" href="css/theme/correct.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/solarized-light.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+	</head>
+	<body>
+		<div class="reveal">
+			<div style="float: right; margin: 10px  auto;">
+				<img width="125px" src="images/callista-logo-t.gif" />
+			</div>
+			<div class="slides">
+
+				<section data-background-image="images/background.png">
+					<h1>Reactive Programming</h1>
+					<h3>with RxJava</h3>
+					<p>
+						<small>
+							CADEC 2017&nbsp;-&nbsp;<a href="mailto:par.wenaker@callistaenterprise.se">Pär Wenåker</a>,&nbsp;<a href="mailto:anders.asplund@callistaenterprise.se">Anders Asplund</a>
+						</small>
+					</p>
+				</section>
+
+				<section>
+					<h3>Agenda</h3>
+					<ul>
+						<li>What and why</li>
+						<li>Current tooling in Java</li>
+						<li>RxJava</li>
+						<li>Future</li>
+					</ul>
+				</section>
+
+				<section>
+					<h3>What is reactive programming?</h3>
+					<div class="fragment">
+						<img width="30%" height="30%" src="images/Erik_Meijer_800x800.jpg"/>
+						<p>Creator of Reactive Extensions @ Microsoft</p>
+					</div>
+				</section>
+
+				<section>
+					<div style="font-size: 200%">Endless confusion</div>
+				</section>
+
+				<section>
+					<img src="images/ericmeijer.jpg" width="70%" height="70%">
+					<div>
+						<p><small>https://youtu.be/sTSQlYX5DU0?t=173</small></p>
+						<q cite="https://www.youtube.com/watch?v=sTSQlYX5DU0">
+							"I have absolutely no f***ing clue!"
+						</q>
+					</div>
+				</section>
+
+				<section>
+					<h3>Attempt of definition</h3>
+				</section>
+
+				<section>
+					<h3>Reactive Programming Model</h3>
+					<ul>
+						<li class="fragment"><u>Asynchronous</u> and <u>non-blocking</u> applications.</li>
+						<li class="fragment"><u>Functional</u> in style.</li>
+						<li class="fragment"><u>Readable</u> and <u>composable</u> APIs.</li>
+						<li class="fragment">Handles asynchronous <u>streams</u> of data.</li>
+					</ul>
+				</section>
+
+				<section>
+					<h3>Why?</h3>
+					<div>
+						<ul>
+							<li class="fragment">Distributed applications (microservices)</li>
+							<li class="fragment">Cloud environments</li>
+							<li class="fragment">Streaming Big Data</li>
+							<li class="fragment">Internet of Things</li>
+						</ul>
+						<p style="font-size: 120%" class="fragment">Better resource utilisation</p>
+					</div>
+					<img class="fragment" width="20%" height="20%" style="border-width: 0" src="images/checkmark.png">
+				</section>
+
+				<section data-transition="fade-out" >
+					<h3>Example Service</h3>
+					<img style="width: 80%; height: 80%" src="images/bookstore.png"/>
+				</section>
+
+				<section data-transition="fade-in fade-out">
+					<h3>Example Service</h3>
+					<img style="width: 80%; height: 80%" src="images/bookstore1.png"/>
+				</section>
+
+				<section data-transition="fade-in fade-out">
+					<h3>Example Service</h3>
+					<img style="width: 80%; height: 80%" src="images/bookstore2.png"/>
+				</section>
+
+				<section data-transition="fade-in fade-out">
+					<h3>Example Service</h3>
+					<img style="width: 80%; height: 80%" src="images/bookstore3.png"/>
+				</section>
+
+				<section data-transition="fade-in fade-out">
+					<h3>Example Service</h3>
+					<img style="width: 80%; height: 80%" src="images/bookstore4.png"/>
+				</section>
+
+				<section class="c-blue">
+					<h3>Asynchronous code pre Java 1.8</h3>
+					<pre><code class="hljs java" data-trim data-noescape>
+Future&lt;Response&gt; f = httpClient.get("http://www.gp.se/");
+Response r = f.get(); // Blocking!!!
+					</code></pre>
+					<p class="fragment" style="border-radius:5px;background:#A40613;color:white;font-weight:bold">Not Asychronous!!</p>
+				</section>
+
+				<section>
+					<h3>Asynchronous call with callback</h3>
+					<pre><code class="hljs java" data-trim data-noescape>
+httpClient.get("http://www.gp.se", response -> {
+   /* Handle response */
+});
+					</code></pre>
+				</section>
+
+				<section>
+					<h3>Multiple asynchronous calls with callback</h3>
+					<pre><code class="hljs java" data-trim data-noescape>
+httpClient.get("http://www.gp.se", response -> {
+   /* Handle response */
+});
+
+httpClient.get("http://www.dn.se", response -> {
+   /* Handle response */
+});</code></pre>
+					<p class="fragment" style="border-radius:5px;background:#A40613;color:white;font-weight:bold">Needs state machine...</p>
+				</section>
+
+				<section data-transition="fade-in fade-out">
+					<h3>Asynchronous call with callback</h3>
+					<pre><code class="hljs java" data-trim data-noescape>
+State state = ...;
+
+httpClient.get("http://www.gp.se", response -> {
+   state.addGp(response);
+});
+
+httpClient.get("http://www.dn.se", response -> {
+   state.addDn(response);
+});</code></pre>
+					<p class="fragment" style="border-radius:5px;background:#A40613;color:white;font-weight:bold">Needs synchronization!!</p>
+				</section>
+
+				<section data-transition="fade-in fade-out">
+					<h3>Asynchronous call with callback</h3>
+					<pre><code class="hljs java" data-trim data-noescape>
+State state = ...;
+httpClient.get("http://www.gp.se", response -> {
+   synchronized(state) {
+      state.addGp(response);
+   }
+});
+httpClient.get("http://www.dn.se", response -> {
+   synchronized(state) {
+      state.addDn(response);
+   }
+});</code></pre>
+				</section>
+
+				<section>
+					<h4>Let's add some error handling....</h4>
+					<div class="fragment" >
+						<img style="width: 60%; height: 60%" src="images/angry.gif"/>
+						<!-- img src="https://media.giphy.com/media/ycagKBYEmaili/giphy.gif"/-->
+					</div>
+				</section>
+
+				<section>
+					<h3>The problem is...</h3>
+					<ul>
+						<li class="fragment">"Void returning functions"</li>
+						<li class="fragment">Mutable state</li>
+					</ul>
+				</section>
+
+				<section>
+					<p>"Code that deals with more than one event or asynchronous computation gets complicated quickly as it
+						needs to build a state-machine to deal with ordering issues.</p>
+					<p>Next to this, the code needs to deal with
+						<u>successful and failure termination</u> of each separate computation. This leads to code that doesn’t follow
+						normal control-flow, is <u>hard to understand and hard to maintain.</u>" </p>
+					<p><small>http://go.microsoft.com/fwlink/?LinkID=205219</small></p>
+				</section>
+
+				<section>
+					<p style="font-size: 150%">Reactive Programming to rescue!!</p>
+					<img src="images/rxlogo.png">
+				</section>
+
+				<section>
+					<h3>Disclaimer 1</h3>
+					<p style="font-size: 150%">Is not easy and has a significant learning curve!</p>
+				</section>
+
+				<section>
+					<h3>Disclaimer 2</h3>
+					<p style="font-size: 150%">Requires a shift from <u>imperative programing</u> to asynchronous, non-blocking and functional style.</p>
+				</section>
+
+				<section>
+					<p style="font-size: 150%">Do <u>not</u> rely on <u>side-effects</u> and <u>mutable state</u>!</p>
+				</section>
+
+				<section>
+					<pre><code class="hljs java" data-trim data-noescape>
+Observable&lt;Tweets&gt twitterHose = ...
+twitterHose
+  .sample(5, MILLISECONDS)
+  .filter(t -> hasImage(t))
+  .flatMap(t -> getImage(t.image))
+  .publish()
+
+tweets.subscribe(/* Do something */);
+tweets.subscribe(/* Do something else */);
+					</code></pre>
+				</section>
+
+				<section>
+					<h3>Java 1.8 CompletableFutures</h3>
+					<pre><code class="hljs java" data-trim data-noescape>
+CompletableFuture&lt;Response&gt response1 =
+   httpClient.get("http://www.gp.se");
+
+CompletableFuture&lt;Response&gt response2 =
+   httpClient.get("http://www.gp.se");
+
+CompletableFuture&lt;State&gt state =
+   response1.<mark>thenCombine</mark>(response2,
+      (value1, value2) -> <mark>f</mark>(value1, value2)
+   );
+state.thenAccept(s -> /* Handle result */)
+     .exceptionally(/*Handle error*/ return errorStatus; });
+						</code></pre>
+				</section>
+
+				<section>
+					<h3>RxJava</h3>
+					<pre><code class="hljs java" data-trim data-noescape>
+Observable&lt;Response&gt; resp1 = httpClient.get("http://gp.se");
+Observable&lt;Response&gt; resp2 = httpClient.get("http://dn.se");
+
+<span class="fragment">Observable&lt;Status&gt; status =</span>
+   <span class="fragment">resp1.zipWith(r2, <mark>(r1,r2) -> f(r1,r2)</mark>)</span>
+        <span class="fragment">.onErrorReturn(t -> {/*Handle error*/ return errorStatus; });</span>
+
+<span class="fragment">status.subscribe(/* Handle result */)</span>
+					</code></pre>
+				</section>
+
+				<section>
+					<h3>Container for the future value.</h3>
+					<ul>
+						<li>Observable</li>
+						<li>CompletableFuture</li>
+					</ul>
+				</section>
+				<section>
+					<h3>Method on the Container for manipulating the future value.</h3>
+					<ul>
+						<li>zipWith</li>
+						<li>thenApply</li>
+						<li>thenAccept</li>
+						<li>onError</li>
+						<li>etc.</li>
+					</ul>
+				</section>
+
+				<section>
+					<h3>Streams</h3>
+					<p>CompletableFuture handles only one element!</p>
+					<br>
+					<p style="font-size: 200%" class="fragment fade-in">Observables!</p>
+				</section>
+
+				<section>
+					<h3>An Observable is...</h3>
+					<p>a <u>combination</u> of the <u>iterator</u> and <u>observer</u> patterns!</p>
+				</section>
+
+				<section>
+					<h3>Iterator pattern</h3>
+					<div>
+						<img src="images/iterator.png">
+					</div>
+					<div>
+						<ul style="width: 50%">
+							<li>Retreive data => next()</li>
+							<li>Complete => hasNext()</li>
+							<li>Error => throws Exception</li>
+						</ul>
+					</div>
+					<div class="fragment">
+						<p class="c-blue">PULL BASED</p>
+					</div>
+				</section>
+
+				<section>
+					<h3>Observer pattern</h3>
+					<div style="float: top">
+						<img src="images/observer.png">
+					</div>
+					<div class="stretch">
+						<ul style="width: 60%">
+							<li>Register Observer with Subject</li>
+							<li>Subject pushes data to Observer</li>
+							<li>Complete & Error???</li>
+						</ul>
+					</div>
+					<div class="fragment">
+						<p class="c-blue">PUSH BASED</p>
+					</div>
+				</section>
+
+				<section>
+					<h3>Observable pattern</h3>
+					<div style="float: top">
+						<img src="images/observable.png">
+					</div>
+					<div class="stretch">
+						<ul style="font-size: 90%; width: 90%">
+							<li>Register Observer with Observable (subject)</li>
+							<li>Observable pushes data to the Observer with onNext()</li>
+							<li>Observable signals end of data with onComplete()</li>
+							<li>Observable signals errors with onError()</li>
+						</ul>
+					</div>
+					<div class="fragment">
+						<p class="c-blue">PUSH BASED</p>
+					</div>
+				</section>
+
+				<section>
+					<h3>Example 1</h3>
+					<pre><code class="hljs java" data-trim data-noescape>
+Observable&lt;Integer&gt; obs = Observable.create(observer -> {
+        observer.onNext(1);
+        observer.onNext(2);
+        observer.onComplete();
+});
+println("Before subscribe")
+obs.subscribe(v -> println(v));
+println("After subscribe")
+
+<span class="fragment">
+Thread[main,5,main] : Before subscribe
+Thread[main,5,main] : 1
+Thread[main,5,main] : 2
+Thread[main,5,main] : After subscribe
+</span>
+					</code></pre>
+
+				</section>
+
+				<section>
+					<h3>Example 2</h3>
+					<pre><code class="hljs java" data-trim data-noescape>
+ Observable&lt;Integer&gt; obs = Observable.create(observer -> {
+     new Thread(() -> {
+         observer.onNext(1);
+         observer.onNext(2);
+         observer.onComplete();
+     }).start();
+ });
+println("Before subscribe")
+obs.subscribe(v -> println(v));
+println("After subscribe")
+
+<span class="fragment">
+Thread[main,5,main] : Before subscribe
+Thread[main,5,main] : After subscribe
+Thread[Thread-0,5,main] : 1
+Thread[Thread-0,5,main] : 2
+</span>
+					</code></pre>
+					<p style="border-radius:5px;background:#A40613;color:white;font-weight:bold">Don't do this...</p>
+				</section>
+
+				<section>
+					<h3>Example 3</h3>
+					<pre><code class="hljs java" data-trim data-noescape>
+ Observable&lt;Response&gt; obs = Observable.create(observer -> {
+     httpClient.get("http://www.gp.se", response -> {
+         observer.onNext(response);
+         observer.onComplete();
+     });
+});
+obs.subscribe(response -> /* Handle output */);</code></pre>
+				</section>
+
+				<section>
+					<table>
+						<thead>
+							<tr><td>&nbsp;</td><td><strong>Single</strong></td><td><strong>Multiple</strong></td></tr>
+						</thead>
+						<tbody>
+						<tr><td><strong>Synchronous</strong></td><td>T get()</td><td>Iterator&lt;T&gt;</td></tr>
+						<tr><td><strong>Asynchronous</strong></td><td>Future&lt;T&gt;</td><td>Observable&lt;T&gt;</td></tr>
+						</tbody>
+					</table>
+				</section>
+
+				<section>
+					<img src="images/push_pull.jpg"/>
+				</section>
+
+				<section>
+					<h3>Java8 Streams?</h3>
+					<img src="images/brian2.png"/>
+					<p>http://bit.ly/2hU6wdA</p>
+				</section>
+
+				<section>
+					"Indeed, RxJava is what you want. The design center for Streams is mostly about data that can be
+					accessed with no latency (either from data structures or generating functions); the design center
+					for Rx is about infinite streams of events which may arrive asynchronously."<br><br>
+					– Brian Goetz
+				</section>
+
+				<section>
+					<h3>Marble Diagram</h3>
+					<p>Terminates with onComplete</p>
+					<img src="images/marblediagram_ok.png"/>
+				</section>
+
+				<section>
+					<h3>Marble Diagram</h3>
+					<p>Terminates with onError</p>
+					<img src="images/marblediagram_err.png"/>
+				</section>
+
+				<section>
+					<h3>Marble Diagram Filter</h3>
+					<img src="images/marblediagram_filter.png"/>
+					<pre><code class="hljs java" data-trim data-noescape>
+Observable&lt;Integer&gt; obs1 = ...
+Observable&lt;Integer&gt; obs2 = obs1.filter(x -> x%2 == 0)</code></pre>
+				</section>
+
+				<section>
+					<h3>Marble Diagram Map</h3>
+					<img src="images/marblediagram_map.png"/>
+					<pre><code class="hljs java" data-trim data-noescape>
+Observable&lt;Integer&gt; obs1 = ...
+Observable&lt;Integer&gt; obs2 = obs1.map(x -> 2 * x)</code></pre>
+				</section>
+
+				<section>
+					<h3>Marble Diagram Flatmap</h3>
+					<img src="images/marblediagram_flatmap.png"/>
+					<pre><code class="hljs java" data-trim data-noescape>
+Observable&lt;Integer&gt; obs1 = ...
+Observable&lt;Integer&gt; obs2 = obs1.flatMap(x -> Observable.just(x, x+1))</code></pre>
+				</section>
+
+				<section>
+					<h3>Marble Diagram Zip</h3>
+					<img src="images/marblediagram_zip.png"/>
+					<pre><code class="hljs java" data-trim data-noescape>
+Observable&lt;Integer&gt; obs1 = ...
+Observable&lt;Integer&gt; obs2 = obs1.zipWith((a,b) -> a+b)</code></pre>
+				</section>
+
+				<section>
+					<iframe class="stretch" src="http://reactivex.io/RxJava/javadoc/rx/Observable.html#method_summary"></iframe>
+				</section>
+
+				<section>
+					<h3>Backpressure</h3>
+				</section>
+
+				<section>
+					<h3>Reactive streams</h3>
+					<img src="images/reactivestreams.png"/>
+					<p><small>http://www.reactive-streams.org</small></p>
+				</section>
+
+				<section>
+					<h3>Reactive streams</h3>
+					<iframe class="stretch" src="http://www.reactive-streams.org/reactive-streams-1.0.0-javadoc/org/reactivestreams/package-summary.html"></iframe>
+				</section>
+
+				<section>
+					<h3>Jdk9 Flow</h3>
+					<p>"Until now, one missing category was
+						"push" style operations on items as they become available from an
+						active source." /Doug Lea</p>
+					<iframe class="stretch" src="http://cs.oswego.edu/pipermail/concurrency-interest/2015-January/013641.html"></iframe>
+				</section>
+
+				<section>
+					<iframe class="stretch" src="http://download.java.net/java/jdk9/docs/api/java/util/concurrent/Flow.html"></iframe>
+				</section>
+
+				<section>
+					<h3>Spring Web Reactive</h3>
+					<img src="images/spring_reactive.png"/>
+				</section>
+
+				<section>
+					<h4>Spring Web Reactive</h4>
+					<pre><code class="hljs java" style="font-size: 70%" data-trim data-noescape>
+@RestController
+public class PersonController {
+
+	private final PersonRepository repository;
+
+	public PersonController(PersonRepository repository) {
+		this.repository = repository;
+	}
+
+	@PostMapping("/person")
+	Mono&lt;Void&gt; create(@RequestBody Publisher&lt;Person&gt; personStream) {
+		return this.repository.save(personStream).then();
+	}
+
+	@GetMapping("/person")
+	Flux&lt;Person&gt; list() {
+		return this.repository.findAll();
+	}
+
+	@GetMapping("/person/{id}")
+	Mono&lt;Person&gt; findById(@PathVariable String id) {
+		return this.repository.findOne(id);
+	}
+}</code></pre>
+				</section>
+
+				<section>
+					<img src="images/reactive-streams-commons.png"/>
+				</section>
+
+				<section>
+					<h3>Conclusions</h3>
+					<ul>
+						<li>Asynchronous programming is hard</li>
+						<li>The Rx model provides abstractions to handle the complexity</li>
+						<li>Rx is a valuble tool in the toolbox for the enterprise java developer.</li>
+					</ul>
+				</section>
+			</div>
+		</div>
+
+		<script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+
+        // More info https://github.com/hakimel/reveal.js#configuration
+        Reveal.initialize({
+            width: 960,
+            height: 700,
+            controls: false,
+            progress: false,
+            history: true,
+            center: true,
+            slideNumber: true,
+            transition: 'convex', // none/fade/slide/convex/concave/zoom
+            transitionSpeed: 'slow',
+            // Optional reveal.js plugins
+            // More info https://github.com/hakimel/reveal.js#dependencies
+            dependencies: [
+                { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+                { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+                { src: 'plugin/zoom-js/zoom.js', async: true },
+                { src: 'plugin/notes/notes.js', async: true }
+            ]
+        });
+        // More info https://github.com/hakimel/reveal.js#configuration
+        $(function() {
+					var es = new EventSource("http://localhost:9000/stream",  {withCredentials: false});
+					es.onmessage = function(event) {
+					    if (event.data == "next") {
+					    	Reveal.next();
+							} else if (event.data == "prev") {
+					      Reveal.prev();
+							} else if (event.data == "start") {
+					      Reveal.slide(1);
+							}
+							console.log(event.data);
+          }
+				});
+		</script>
+	</body>
+</html>
