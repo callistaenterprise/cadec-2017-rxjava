@@ -24,12 +24,15 @@
 	</head>
 	<body>
 		<div class="reveal">
+			<div style="float: left; margin: 10px  auto;">
+					<img id="status_img" width="24px" src="images/circle_red.png"/>
+			</div>
 			<div style="float: right; margin: 10px  auto;">
 				<img width="125px" src="images/callista-logo-t.gif" />
 			</div>
 			<div class="slides">
 
-				<section data-background-image="images/background.png">
+				<section>
 					<h1>Reactive Programming</h1>
 					<h3>with RxJava</h3>
 					<p>
@@ -43,7 +46,6 @@
 					<h3>Agenda</h3>
 					<ul>
 						<li>What and why</li>
-						<li>Current tooling in Java</li>
 						<li>RxJava</li>
 						<li>Future</li>
 					</ul>
@@ -232,8 +234,8 @@ httpClient.get("http://www.dn.se", response -> {
 
 				<section>
 					<pre><code class="hljs java" data-trim data-noescape>
-Observable&lt;Tweets&gt twitterHose = ...
-twitterHose
+Observable&lt;Tweets&gt twitterFirehose = ...
+twitterFirehose
   .sample(5, MILLISECONDS)
   .filter(t -> hasImage(t))
   .flatMap(t -> getImage(t.image))
@@ -417,6 +419,17 @@ obs.subscribe(response -> /* Handle output */);</code></pre>
 				</section>
 
 				<section>
+					<h3>Single</h3>
+					<pre><code class="hljs java" data-trim data-noescape>
+<mark>Single</mark>&lt;Response&gt; obs = <mark>Single</mark>.create(observer -> {
+     httpClient.get("http://www.gp.se", response -> {
+         observer.<mark>onSuccess</mark>(response);
+     });
+});
+obs.subscribe(response -> /* Handle output */);</code></pre>
+				</section>
+
+				<section>
 					<table>
 						<thead>
 							<tr><td>&nbsp;</td><td><strong>Single</strong></td><td><strong>Multiple</strong></td></tr>
@@ -460,6 +473,9 @@ obs.subscribe(response -> /* Handle output */);</code></pre>
 				<section>
 					<h3>Marble Diagram Filter</h3>
 					<img src="images/marblediagram_filter.png"/>
+				</section>
+
+				<section>
 					<pre><code class="hljs java" data-trim data-noescape>
 Observable&lt;Integer&gt; obs1 = ...
 Observable&lt;Integer&gt; obs2 = obs1.filter(x -> x%2 == 0)</code></pre>
@@ -468,6 +484,9 @@ Observable&lt;Integer&gt; obs2 = obs1.filter(x -> x%2 == 0)</code></pre>
 				<section>
 					<h3>Marble Diagram Map</h3>
 					<img src="images/marblediagram_map.png"/>
+				</section>
+
+				<section>
 					<pre><code class="hljs java" data-trim data-noescape>
 Observable&lt;Integer&gt; obs1 = ...
 Observable&lt;Integer&gt; obs2 = obs1.map(x -> 2 * x)</code></pre>
@@ -476,6 +495,9 @@ Observable&lt;Integer&gt; obs2 = obs1.map(x -> 2 * x)</code></pre>
 				<section>
 					<h3>Marble Diagram Flatmap</h3>
 					<img src="images/marblediagram_flatmap.png"/>
+				</section>
+
+				<section>
 					<pre><code class="hljs java" data-trim data-noescape>
 Observable&lt;Integer&gt; obs1 = ...
 Observable&lt;Integer&gt; obs2 = obs1.flatMap(x -> Observable.just(x, x+1))</code></pre>
@@ -484,12 +506,16 @@ Observable&lt;Integer&gt; obs2 = obs1.flatMap(x -> Observable.just(x, x+1))</cod
 				<section>
 					<h3>Marble Diagram Zip</h3>
 					<img src="images/marblediagram_zip.png"/>
+				</section>
+
+				<section>
 					<pre><code class="hljs java" data-trim data-noescape>
 Observable&lt;Integer&gt; obs1 = ...
 Observable&lt;Integer&gt; obs2 = obs1.zipWith((a,b) -> a+b)</code></pre>
 				</section>
 
 				<section>
+					<h3>Observable method summary</h3>
 					<iframe class="stretch" src="http://reactivex.io/RxJava/javadoc/rx/Observable.html#method_summary"></iframe>
 				</section>
 
@@ -526,6 +552,10 @@ Observable&lt;Integer&gt; obs2 = obs1.zipWith((a,b) -> a+b)</code></pre>
 				</section>
 
 				<section>
+					<img src="images/reactive-streams-commons.png"/>
+				</section>
+
+				<section>
 					<h4>Spring Web Reactive</h4>
 					<pre><code class="hljs java" style="font-size: 70%" data-trim data-noescape>
 @RestController
@@ -555,15 +585,11 @@ public class PersonController {
 				</section>
 
 				<section>
-					<img src="images/reactive-streams-commons.png"/>
-				</section>
-
-				<section>
 					<h3>Conclusions</h3>
 					<ul>
-						<li>Asynchronous programming is hard</li>
-						<li>The Rx model provides abstractions to handle the complexity</li>
-						<li>Rx is a valuble tool in the toolbox for the enterprise java developer.</li>
+						<li class="fragment">Asynchronous programming is hard</li>
+						<li class="fragment">The Rx model provides abstractions to handle the complexity</li>
+						<li class="fragment">Rx is a valuble tool in the toolbox for the enterprise java developer.</li>
 					</ul>
 				</section>
 			</div>
@@ -600,14 +626,21 @@ public class PersonController {
         });
         // More info https://github.com/hakimel/reveal.js#configuration
         $(function() {
-					var es = new EventSource("http://localhost:9000/stream",  {withCredentials: false});
+					var es = new EventSource("https://dry-tundra-82160.herokuapp.com/stream",  {withCredentials: false});
+					var timer;
 					es.onmessage = function(event) {
 					    if (event.data == "next") {
 					    	Reveal.next();
 							} else if (event.data == "prev") {
 					      Reveal.prev();
 							} else if (event.data == "start") {
-					      Reveal.slide(1);
+					      Reveal.slide(0);
+							} else if (event.data == "ping") {
+					        $('#status_img').attr('src', "images/circle_green.png")
+                  window.clearTimeout(timer)
+									timer = window.setTimeout(function () {
+                      $('#status_img').attr('src', "images/circle_red.png")
+                  }, 5000);
 							}
 							console.log(event.data);
           }
