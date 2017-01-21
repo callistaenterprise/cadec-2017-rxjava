@@ -12,7 +12,7 @@ import java.util.List;
 public class DroneSimulatorServer {
 	private static Logger logger = LoggerFactory.getLogger(DroneSimulatorServer.class);
 	private static Coordinate droneBaseStation = new Coordinate(57.706324, 11.963436);
-	private static final int SPEED = 350;
+	private static final int SPEED = 300;
 
 	public static void main(String[] args) {
 

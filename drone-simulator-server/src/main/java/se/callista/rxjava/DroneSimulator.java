@@ -29,13 +29,13 @@ public class DroneSimulator {
 		}
 
 		final double samplingDistance = toMetersPerSecond(trip.getSpeed()) * ((double)samplingTime / 1000);
-		final Observable<Coordinate> coordinateStream = waypoints(trip.getFrom(), trip.getTo(), samplingDistance);
+		final Observable<Coordinate> coordinateStream = Observable.from(waypoints(trip.getFrom(), trip.getTo(), samplingDistance));
 
 		final Observable<Coordinate> simulatedTrip =
 				Observable.interval(samplingTime, TimeUnit.MILLISECONDS)
-						.zipWith(coordinateStream, (tick, coordinate) -> coordinate)
-						.doOnCompleted(() -> simulations.remove(trip))
-						.publish().autoConnect()
+				.zipWith(coordinateStream, (tick, coorditnate) -> coorditnate)
+				.doOnCompleted(() -> simulations.remove(trip))
+				.publish().autoConnect()
 				;
 
 		logger.debug("Put simulated trip in cache {}", trip);
