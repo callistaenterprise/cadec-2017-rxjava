@@ -459,6 +459,11 @@ obs.subscribe(response -> /* Handle output */);</code></pre>
 				</section>
 
 				<section>
+					<img src="images/devoxx.png">
+					<p>https://youtu.be/fabN6HNZ2qY</p>
+				</section>
+
+				<section>
 					<h3>Marble Diagram</h3>
 					<p>Terminates with onComplete</p>
 					<img src="images/marblediagram_ok.png"/>
@@ -511,7 +516,8 @@ Observable&lt;Integer&gt; obs2 = obs1.flatMap(x -> Observable.just(x, x+1))</cod
 				<section>
 					<pre><code class="hljs java" data-trim data-noescape>
 Observable&lt;Integer&gt; obs1 = ...
-Observable&lt;Integer&gt; obs2 = obs1.zipWith((a,b) -> a+b)</code></pre>
+Observable&lt;Integer&gt; obs2 = ...
+Observable&lt;Integer&gt; obs3 = obs1.zipWith(obs2, (a,b) -> a+b)</code></pre>
 				</section>
 
 				<section>
