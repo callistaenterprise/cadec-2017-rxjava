@@ -15,33 +15,26 @@ import static se.callista.rxjava.GeoMath.waypoints;
 public class DroneSimulator {
 	private static Logger logger = LoggerFactory.getLogger(DroneSimulator.class);
 
-	private Map<Trip, Observable<Coordinate>> simulations = new ConcurrentHashMap<>();
-
 	public DroneSimulator() {
 		logger.debug("Creating new DroneSimulator");
 	}
 
-	public synchronized Observable<Coordinate> simulateDroneTrip(Trip trip, long samplingTime) {
+	public Observable<Coordinate> simulateDroneTrip(Trip trip, long samplingTime) {
 
-		if (simulations.containsKey(trip)) {
-			logger.debug("Reuse simulated trip {}", trip);
-			return simulations.get(trip);
-		}
-
+		//Calculate distance between sampled wayoints
 		final double samplingDistance = toMetersPerSecond(trip.getSpeed()) * ((double)samplingTime / 1000);
+
+
+		//Create stream of waypoints
 		final Observable<Coordinate> coordinateStream = Observable.from(waypoints(trip.getFrom(), trip.getTo(), samplingDistance));
 
-		final Observable<Coordinate> simulatedTrip =
-				Observable.interval(samplingTime, TimeUnit.MILLISECONDS)
-				.zipWith(coordinateStream, (tick, coorditnate) -> coorditnate)
-				.doOnCompleted(() -> simulations.remove(trip))
-				.publish().autoConnect()
-				;
 
-		logger.debug("Put simulated trip in cache {}", trip);
-		simulations.put(trip, simulatedTrip);
+		//Create stream of 'ticks'
+		final Observable<Long> metronom = Observable.interval(samplingTime, TimeUnit.MILLISECONDS);
 
-		return simulatedTrip;
+
+		//Zip stream waypoints with metronom
+		return coordinateStream.zipWith(metronom, (coordinate, tick) -> coordinate);
 
 	}
 }

@@ -3,7 +3,7 @@ package services
 import model._
 
 class DroneOrderServiceScala(booksService: BooksService, personnummerService: PersonnummerService,
-                                       coordinateService: CoordinateService, bookOrderService: BookOrderService) {
+                             coordinateService: CoordinateService, bookOrderService: BookOrderService) {
 
 //	def placeDroneOrder(orderForm: OrderForm) = {
 //

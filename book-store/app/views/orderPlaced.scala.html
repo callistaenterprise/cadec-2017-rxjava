@@ -35,7 +35,8 @@
     </p>
     <p>
     @if(order.getOrderId != null) {
-        Follow the drone delivery:
+        Thanks for the order!<br/>
+        Follow the drone for delivery:
         <a href="@routes.BookStoreController.showDelivery(order.getOrderId)" target="_blank">
            @routes.BookStoreController.showDelivery(order.getOrderId).absoluteURL()
         </a>
