@@ -29,13 +29,13 @@ public class DroneOrderService {
 
 		return Single.just(new Order(null, null, null));
 
-		//Get book from BookService
+		//1. Get book from BookService
 
-		//Get Address from PersonnummerService
+		//2. Get Address from PersonnummerService
 
-		//Get Coordinates from CoordinateService and zip it with the book
+		//3. Get Coordinates from CoordinateService and zip it with the book
 
-		//Send the order using the bookOrderService
+		//4. Send the order using the bookOrderService
 	}
 }
 
