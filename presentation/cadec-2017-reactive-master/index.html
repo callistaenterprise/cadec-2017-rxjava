@@ -48,6 +48,7 @@
 						<li>What and why</li>
 						<li>RxJava</li>
 						<li>Future</li>
+						<li>Demo</li>
 					</ul>
 				</section>
 
@@ -250,10 +251,10 @@ tweets.subscribe(/* Do something else */);
 					<h3>Java 1.8 CompletableFutures</h3>
 					<pre><code class="hljs java" data-trim data-noescape>
 CompletableFuture&lt;Response&gt response1 =
-   httpClient.get("http://www.gp.se");
+   httpClient.get("http://gp.se");
 
 CompletableFuture&lt;Response&gt response2 =
-   httpClient.get("http://www.gp.se");
+   httpClient.get("http://dn.se");
 
 CompletableFuture&lt;State&gt state =
    response1.<mark>thenCombine</mark>(response2,
@@ -271,7 +272,7 @@ Observable&lt;Response&gt; resp1 = httpClient.get("http://gp.se");
 Observable&lt;Response&gt; resp2 = httpClient.get("http://dn.se");
 
 <span class="fragment">Observable&lt;Status&gt; status =</span>
-   <span class="fragment">resp1.zipWith(r2, <mark>(r1,r2) -> f(r1,r2)</mark>)</span>
+   <span class="fragment">resp1.zipWith(resp2, <mark>(r1,r2) -> f(r1,r2)</mark>)</span>
         <span class="fragment">.onErrorReturn(t -> {/*Handle error*/ return errorStatus; });</span>
 
 <span class="fragment">status.subscribe(/* Handle result */)</span>
