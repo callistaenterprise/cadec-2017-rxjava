@@ -35,7 +35,8 @@ public class DroneOrderService {
 
 		//3. Get Coordinates from CoordinateService and zip it with the book
 		final Single<Order> orderSingle = addressSingle
-				.flatMap(address -> coordinateService.getCoordinate(address)
+				.flatMap(address -> coordinateService.getCoordinateBroken(address)
+						.onErrorResumeNext(coordinateService.getCoordinate(address))
 						.zipWith(bookSingle, (coordinates, book) -> new Order(book, address, coordinates))
 				);
 
