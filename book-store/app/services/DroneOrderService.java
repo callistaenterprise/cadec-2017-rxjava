@@ -27,15 +27,21 @@ public class DroneOrderService {
 
 	public Single<Order> placeDroneOrder(OrderForm orderForm) {
 
-		return Single.just(new Order(null, null, null));
-
 		//1. Get book from BookService
+		final Single<Book> bookSingle = bookService.getBook(orderForm.getBookTitle(), orderForm.getBookAuthor());
 
 		//2. Get Address from PersonnummerService
+		final Single<Address> addressSingle = personnummerService.getAddressByPersonnummer(orderForm.getPnr());
 
 		//3. Get Coordinates from CoordinateService and zip it with the book
+		final Single<Order> orderSingle = addressSingle
+				.flatMap(address -> coordinateService.getCoordinate(address)
+						.zipWith(bookSingle, (coordinates, book) -> new Order(book, address, coordinates))
+				);
 
 		//4. Send the order using the bookOrderService
+		return orderSingle.flatMap(order -> bookOrderService.sendOrder(order));
+
 	}
 }
 
