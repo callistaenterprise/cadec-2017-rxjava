@@ -17,6 +17,12 @@ coordinate_data = {
             "lng": "12.117010"
         }
     },
+    "stockholm": {
+        "coords": {
+            "lat": "59.333656",
+            "lng": "18.061400"
+        }
+    },
     "kungalv": {
         "coords": {
             "lat": "57.871530",
@@ -51,8 +57,8 @@ books_data = {
 personnummer_data = {
     "197503259280": {
         "name": "Anders Asplund",
-        "street": "Fabriksgatan 25",
-        "city": "Goteborg"
+        "street": "Drottninggatan 55",
+        "city": "Stockholm"
     },
     "198407119281": {
         "name": "Par Wenaker",
