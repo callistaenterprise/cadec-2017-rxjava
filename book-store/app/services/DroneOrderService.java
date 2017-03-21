@@ -22,9 +22,19 @@ public class DroneOrderService {
 	}
 
 
-
-
-
+/*
+                                       +---------------+
+                                       |               |
+            +--------------------------+  BookService  +------------------------+
+            |                          |               |                        |      +--------------------+
+            |                          +---------------+                        |      |                    |
++-----------+                                                                   +------+  BookOrderService  +--------->
+            |     +-----------------------+         +---------------------+     |      |                    |
+            |     |                       |         |                     |     |      +--------------------+
+            +-----+  PersonnummerService  +---------+  CoordinateService  +-----+
+                  |                       |         |                     |
+                  +-----------------------+         +---------------------+
+*/
 	public Single<Order> placeDroneOrder(OrderForm orderForm) {
 
 		//1. Get book from BookService
@@ -37,7 +47,7 @@ public class DroneOrderService {
 		final Single<Order> orderSingle = addressSingle
 				.flatMap(address -> coordinateService.getCoordinateBroken(address)
 						.onErrorResumeNext(coordinateService.getCoordinate(address))
-						.zipWith(bookSingle, (coordinates, book) -> new Order(book, address, coordinates))
+						.zipWith(bookSingle, ((coordinates, book) -> new Order(book, address, coordinates)))
 				);
 
 		//4. Send the order using the bookOrderService
