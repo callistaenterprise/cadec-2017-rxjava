@@ -12,14 +12,14 @@ import java.util.concurrent.TimeUnit;
 import static se.callista.rxjava.GeoMath.toMetersPerSecond;
 import static se.callista.rxjava.GeoMath.waypoints;
 
-public class DroneSimulator {
+class DroneSimulator {
 	private static Logger logger = LoggerFactory.getLogger(DroneSimulator.class);
 
-	public DroneSimulator() {
+	DroneSimulator() {
 		logger.debug("Creating new DroneSimulator");
 	}
 
-	public Observable<Coordinate> simulateDroneTrip(Trip trip, long samplingTime) {
+	Observable<Coordinate> simulateDroneTrip(Trip trip, long samplingTime) {
 
 		//Calculate distance between sampled wayoints
 		final double samplingDistance = toMetersPerSecond(trip.getSpeed()) * ((double)samplingTime / 1000);
